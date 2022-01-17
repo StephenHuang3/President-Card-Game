@@ -1,0 +1,236 @@
+import java.util.*;
+public class President {
+	
+public static void main(String args[]) {
+	Scanner in = new Scanner(System.in);
+	int num;
+	do {
+	System.out.println("How many players are playing?(up to 6)");
+	 num = in.nextInt();
+	}while(num>6||num<0);
+	String name[] = new String[num];
+	for(int i = 0; i < num; i++) {
+		System.out.println("What is the name of player "+ (i+1));
+		name[i]=in.next();
+	}
+	//value of cards
+	Map<String, Integer> cardvalue= new TreeMap();
+	for(int i = 3; i <=10; i++) {
+		cardvalue.put(Integer.toString(i), i);
+	}
+	cardvalue.put("J", 11);
+	cardvalue.put("Q", 12);
+	cardvalue.put("K", 13);
+	cardvalue.put("A", 14);
+	cardvalue.put("2", 15);
+	cardvalue.put("Joker", 16);
+	
+	//distribute cards
+	int hand[][] = new int[num][54/num+1];
+	int pick[] = new int[14];
+	pick[13]=2;
+	int shuffle[] = new int[54];
+	for(int i = 0; i < 54; i++) {
+		Random r = new Random();
+		int randnum= r.nextInt((16 - 3) + 1) + 3;
+		
+		if(pick[randnum-3]>=4)i = i-1;
+		else {
+			shuffle[i]= randnum;
+			pick[randnum-3]+=1;
+		}
+	}
+	
+	
+	for(int i = 0; i < 54; i++) {
+		int rep = i%num; int got = i/num;
+		while(shuffle[i]==0) {
+			i++;
+		}
+		hand[rep][got]= shuffle[i];
+	}
+	for(int i = 0; i < num; i++) {
+	Arrays.sort(hand[i]);
+	}
+	
+	int cardsleft[] = new int[num];
+	for(int i = 0; i < num; i++) {
+		for(int j = 0; j <54/num+1;j++) {
+			if(hand[i][j]!=0) {
+				cardsleft[i]+=1;
+			}
+			
+		}
+		
+	}
+	 int cardintvalue=0;
+	/*
+	for(int i = 0; i < num; i++) {
+		for(int j = 0; j <54/num+1; j++) {
+			System.out.print(hand[i][j]+ " ");
+		}
+		System.out.println("total cards "+ cardsleft[i]);
+		System.out.println("");
+	}
+	*/
+	 
+	 
+	 //game while loop
+	 int playerfinishindex[] = new int[num]; int numofpass=0; int lastplayindex=0;
+	int finish = 0; int tablecardvalue=0; int tablecardnum=0;
+	int index = 0;
+	int numofcardsplay; String cardplayed="";
+	for(int i = 0; i < num; i++) {
+		playerfinishindex[i]=-1;
+	}
+	
+	while (finish<num) {
+		
+		if(tablecardnum!=0) {
+			System.out.println("the cards on the table are");
+			System.out.println("");
+			for(int i = 0; i <tablecardnum;i++) {
+				if(tablecardvalue>=3&&tablecardvalue<=10) {
+					System.out.print(tablecardvalue+ " ");
+					}
+					else if (tablecardvalue==11)System.out.print("J"+ " ");
+					else if (tablecardvalue==12)System.out.print("Q"+ " ");
+					else if (tablecardvalue==13)System.out.print("K"+ " ");
+					else if (tablecardvalue==14)System.out.print("A"+ " ");
+					else if (tablecardvalue==15)System.out.print(2+ " ");
+					else if (tablecardvalue==16)System.out.print("Joker"+ " ");
+				
+			}
+			System.out.println("");
+			
+		}
+		else {
+			System.out.println("table is empty you can play anything");
+			System.out.println("");
+		}
+		
+		System.out.println(name[index]+ " your cards are");
+		for(int i =0; i <54/num+1; i++) {
+			if(hand[index][i]>=3&&hand[index][i]<=10) {
+			System.out.print(hand[index][i]+ " ");
+			}
+			else if (hand[index][i]==11)System.out.print("J"+ " ");
+			else if (hand[index][i]==12)System.out.print("Q"+ " ");
+			else if (hand[index][i]==13)System.out.print("K"+ " ");
+			else if (hand[index][i]==14)System.out.print("A"+ " ");
+			else if (hand[index][i]==15)System.out.print(2+ " ");
+			else if (hand[index][i]==16)System.out.print("Joker"+ " ");
+		}
+		
+		boolean possible = false;
+		do{
+		do {
+			System.out.println("");
+		System.out.println("How many cards do you want to play? if you want to pass, type 0");	
+		numofcardsplay = in.nextInt();
+		if(tablecardnum==0)tablecardnum=numofcardsplay;
+		if(numofcardsplay==0)numofpass++;
+		if(numofcardsplay==0)break;
+		}while(numofcardsplay<0||numofcardsplay>4);
+		do {
+			if(numofcardsplay==0)break;
+		System.out.println("what card do you want to play?");
+		cardplayed=in.next();
+		}while(cardplayed.equals("0"));
+		if(cardplayed.equals("3"))cardintvalue=3;
+		else if(cardplayed.equals("4"))cardintvalue=4;
+		else if(cardplayed.equals("5"))cardintvalue=5;
+		else if(cardplayed.equals("6"))cardintvalue=6;
+		else if(cardplayed.equals("7"))cardintvalue=7;
+		else if(cardplayed.equals("8"))cardintvalue=8;
+		else if(cardplayed.equals("9"))cardintvalue=9;
+		else if(cardplayed.equals("10"))cardintvalue=10;
+		else if(cardplayed.equals("J"))cardintvalue=11;
+		else if(cardplayed.equals("Q"))cardintvalue=12;
+		else if(cardplayed.equals("K"))cardintvalue=13;
+		else if(cardplayed.equals("A"))cardintvalue=14;
+		else if(cardplayed.equals("2"))cardintvalue=15;
+		else if(cardplayed.equals("Joker"))cardintvalue=16;
+		if(numofcardsplay==0)break;
+		int rep=0;
+		for(int i =0; i <hand[index].length;i++) {
+			if(hand[index][i]==cardintvalue)rep++;
+		}
+		if(rep>=numofcardsplay&&cardintvalue>tablecardvalue&&numofcardsplay==tablecardnum)possible= true;
+		else System.out.println("invalid");
+
+		}while(possible == false);
+		if(possible ==true) {
+			lastplayindex=index;
+			numofpass=0;
+			tablecardvalue=cardintvalue;
+			tablecardnum=numofcardsplay;
+			int removecardcount = 0;
+			for(int i = 0; i < 54/num+1; i++) {
+				if(hand[index][i]==cardintvalue) {
+					hand[index][i]=0;
+					removecardcount++;
+					if(removecardcount==numofcardsplay)break;
+				}
+				
+				
+				if(removecardcount==numofcardsplay)break;
+			}
+			removecardcount=0;
+			cardsleft[index]= cardsleft[index]-numofcardsplay;
+		}
+			/*
+			if(numofpass==num-1) {
+				System.out.println(name[lastplayindex]+ " gets to go again everyone pass");
+				numofpass=0;
+				tablecardvalue=0;
+				tablecardnum=0;
+				
+			}
+			*/
+			
+			
+		
+		if(cardsleft[index]==0) {
+			tablecardvalue=0;
+			tablecardnum=0;
+			playerfinishindex[finish]=index;
+			finish++;
+			if(finish==1)System.out.println(name[index]+ " is president");
+			else if(finish==2)System.out.println(name[index]+ " is vice-president");
+			else if(finish==num)System.out.println(name[index]+ " is bum");
+			else if(finish==num - 1)System.out.println(name[index]+ " is vice-bum");
+			tablecardvalue=0;
+			tablecardnum=0;
+			numofpass=0;
+		}
+		
+		
+		if(numofpass==num-1) {
+			System.out.println("Everyone passes, "+ name[lastplayindex]+ " gets to go again");
+			index=lastplayindex;
+			tablecardvalue=0;
+			tablecardnum=0;
+			numofpass=0;
+		}
+		else {
+		index++;
+		if(index==num)index=0; boolean nomatch = true;
+		do {
+			nomatch = true;
+			if(index==num)index=0;
+		for(int i = 0; i < num; i++) {
+			if(index==playerfinishindex[i])nomatch=false;
+		}
+		if(nomatch==false)index++;
+		}while(nomatch==false);
+		}
+		
+	}
+	System.out.println("the game has ended");
+	
+	
+	
+	in.close();
+}
+}
